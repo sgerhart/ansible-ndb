@@ -1,0 +1,73 @@
+__metaclass__ = type
+DOCUMENTATION = """
+module: ndb_user.py
+author: Steven Gerhart (stgerhar@cisco.com)
+short_description: Manage Nexus Data Broker Users
+description:
+- This will query, create and delete Nexus Data Broker users.
+version_added: 1.0.0
+extends_documentation_fragment:
+- sgerhart.ndb
+notes:
+- Tested against NDB 10.0
+options:
+  banner:
+    description:
+    - Specifies which banner should be configured on the remote device. In Ansible
+      2.4 and earlier only I(login) and I(motd) were supported.
+    required: true
+    choices:
+    - login
+    - motd
+    - exec
+    - incoming
+    - slip-ppp
+    type: str
+  text:
+    description:
+    - The banner text that should be present in the remote device running configuration.  This
+      argument accepts a multiline string, with no empty lines. Requires I(state=present).
+    type: str
+  state:
+    description:
+    - Specifies whether or not the configuration is present in the current devices
+      active running configuration.
+    default: present
+    type: str
+    choices:
+    - present
+    - absent
+    - query
+"""
+EXAMPLES = """
+- name: configure the login banner
+  cisco.ios.ios_banner:
+    banner: login
+    text: |
+      this is my login banner
+      that contains a multiline
+      string
+    state: present
+
+- name: remove the motd banner
+  cisco.ios.ios_banner:
+    banner: motd
+    state: absent
+
+- name: Configure banner from file
+  cisco.ios.ios_banner:
+    banner: motd
+    text: "{{ lookup('file', './config_partial/raw_banner.cfg') }}"
+    state: present
+"""
+RETURN = """
+commands:
+  description: The list of configuration mode commands to send to the device
+  returned: always
+  type: list
+  sample:
+    - banner login
+    - this is my login banner
+    - that contains a multiline
+    - string
+"""

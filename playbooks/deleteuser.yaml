@@ -1,0 +1,24 @@
+
+# This is for testing the ndb_user module !!
+# Note: This playbook is only to illustrate all module functionality.
+---
+- name: NDB_User Module Test
+  hosts: ndb
+  gather_facts: no
+  connection: local
+  collections:
+    - sgerhart.ndb
+  tasks:
+  - name: Get user
+    ndb_user:
+      ndb_host: "{{ inventory_hostname }}"
+      ndb_port: "8443"
+      ndb_username: admin
+      ndb_password: admin
+      state: absent
+      username: testuser15
+      role: Network-Admin
+    register: testout
+  - name: dump test output
+    debug:
+      msg: '{{ testout }}'
